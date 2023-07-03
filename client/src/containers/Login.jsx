@@ -19,6 +19,7 @@ import {
 
 import { app } from "../config/firebase.config";
 import { validateUserJWTToken } from "../api";
+import { alertInfo, alertWarning } from "../context/actions/alertActions";
 
 const Login = () => {
   const [userEmail, setUserEmail] = useState("");
@@ -34,7 +35,8 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user);
-
+  const alert = useSelector((state) => state.alert);
+  
   //if logged in then if u try to acces login page then as soon as change in user is detected the user is navigated to home route
   useEffect(() => {
     if(user){
@@ -64,6 +66,7 @@ const Login = () => {
     if (userEmail === "" || password === "" || confirm_password === "") {
       // console.log('They are empty')
       //alert message
+      dispatch(alertInfo('Required fields should not be empty'));
     } else {
       if (password === confirm_password) {
         // we need to reset all the fields in our form after the token is validated
@@ -90,6 +93,7 @@ const Login = () => {
         // console.log('Equal')
       } else {
         // alert message
+        dispatch(alertWarning("Password doesn't match"));
       }
     }
   };
@@ -113,6 +117,7 @@ const Login = () => {
       );
     } else {
       //alert message
+      dispatch(alertWarning("Password doesn't match"));
     }
   };
 

@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import { Login, Main } from './containers'
 import { app } from './config/firebase.config';
 import { validateUserJWTToken } from './api';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setUserDetails } from './context/actions/userActions';
 import { fadeInOut } from './animations';
 import { motion } from "framer-motion";
@@ -13,10 +13,12 @@ import { Alert, MainLoader } from './components';
 const App = () => {
   const firebaseAuth = getAuth(app);
   const [isLoading, setIsLoading] = useState(false)
+  const alert = useSelector(state => state.alert)
 
   const dispatch = useDispatch()
 
   //spinner or laoding animation while its taking tym to check for authentication
+  
   useEffect(() => {
     setIsLoading(true);
     firebaseAuth.onAuthStateChanged((cred) => {
@@ -49,7 +51,7 @@ const App = () => {
         <Route path="/Login" element={<Login />} />
       </Routes>
       
-      <Alert type={"success"} message={"Hi there"}/>
+      {alert?.type && <Alert type={alert?.type} message={alert?.message}/> }
     </div>
   )
 }
