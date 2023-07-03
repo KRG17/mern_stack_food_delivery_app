@@ -3,3 +3,4 @@ export const isActiveStyles =
 
 export const isNotActiveStyles =
   " text-xl text-textColor hover:text-red-700 duration-100 px-4 py-2 transition-all ease-in-out";
+
