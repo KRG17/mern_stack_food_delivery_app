@@ -11,6 +11,10 @@ body{
     font-family: "Jost", sans-serif;
 }
 
+.MuiPaper-root {
+  width: 100%;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

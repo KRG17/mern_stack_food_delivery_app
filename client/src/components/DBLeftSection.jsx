@@ -8,7 +8,7 @@ const DBLeftSection = () => {
     <div className="h-full py-12 flex flex-col bg-LightOverlay backdrop-blur-md shadow-md min-w-210 w-300 gap-3">
       <NavLink to={"/"} className="flex items-center justify-start px-6 gap-4">
         <img src={Logo} className="w-12" />
-        <p className="font-semibold text-2xl">Noida</p>
+        <p className="font-semibold text-2xl">Yum</p>
       </NavLink>
 
       <hr />
@@ -72,7 +72,7 @@ const DBLeftSection = () => {
           </div>
           <p className="text-xl text-primary font-semibold">Help Center</p>
           <p className="text-base text-gray-300 text-center">
-            Having trouble in city. Please contact us for more questions
+            Having trouble in Yum. Please contact us for more questions
           </p>
           <p className="px-4 py-2 rounded-full bg-primary text-red-400 cursor-pointer">
             Get in touch
