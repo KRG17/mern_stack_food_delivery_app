@@ -31,8 +31,8 @@ const Header = () => {
   return (
     <header className="fixed backdrop-blur-md z-50 inset-x-0 top-0 flex items-center justify-between px-12 md:px-20 py-6">
       <NavLink to={"/"} className="flex items-center justify-center gap-4">
-        <img src={Logo} className="w-12" />
-        <p className="font-semibold text-xl">Noida</p>
+        <img src={Logo} className="h-20 w-20" />
+        <p className="font-semibold text-2xl">YUM</p>
       </NavLink>
 
       <nav className="flex items-center justify-center gap-8">
