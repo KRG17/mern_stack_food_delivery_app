@@ -1,4 +1,4 @@
-> Fullstack Food Delivery Application using Reactjs
+Fullstack Food Delivery Application using Reactjs
 
 • Developed a Full Stack Food Delivery App, featuring an intuitive Admin Dashboard, using React JS,  
 Tailwind CSS, Material UI, Node JS Express, and Firebase Cloud Functions. 
