@@ -1,5 +1,10 @@
 import React from "react";
-import { BsFillBellFill, BsToggles2, MdSearch, MdLogout } from "../assets/icons";
+import {
+  BsFillBellFill,
+  BsToggles2,
+  MdSearch,
+  MdLogout,
+} from "../assets/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { buttonClick } from "../animations";
@@ -46,10 +51,13 @@ const DBHeader = () => {
           <BsToggles2 className="text-gray-400 text-2xl" />
         </div>
 
-        <motion.div {...buttonClick} className="w-10 h-10 rounded-md cursor-pointer bg-LightOverlay backdrop-blur-md shadow-md flex items-center justify-center">
+        <motion.div
+          {...buttonClick}
+          className="w-10 h-10 rounded-md cursor-pointer bg-LightOverlay backdrop-blur-md shadow-md flex items-center justify-center"
+        >
           <BsFillBellFill className="text-gray-400 text-xl" />
         </motion.div>
-        
+
         <div className="flex items-center justify-center gap-2">
           <div className="w-10 h-10 rounded-md shadow-md cursor-pointer overflow-hidden">
             <motion.img
