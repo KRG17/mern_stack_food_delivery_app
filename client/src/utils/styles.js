@@ -19,7 +19,7 @@ export const randomData = [
     id: 1,
     imageURL:
       "https://firebasestorage.googleapis.com/v0/b/food-app-nov-22.appspot.com/o/Pictures%2F1674704862591_dessert2.png?alt=media&token=7c001521-f0ac-40a8-b07a-42dc4aab444a",
-    product_name: "Iceream",
+    product_name: "Icecream",
     product_category: "Chocolate & vanilla",
     product_price: "23.00",
   },

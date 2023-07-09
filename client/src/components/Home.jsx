@@ -42,7 +42,7 @@ const Home = () => {
 
       <div className="py-2 flex-1 flex items-center justify-end relative">
         <img
-          className="absolute top-0 right-0 md:-right-12  w-full h-420 md:w-auto md:h-650"
+          className="absolute top-0 right-0 md:-right-8  w-full h-420 md:w-auto md:h-650"
           src={HeroBg}
           alt=""
         />
