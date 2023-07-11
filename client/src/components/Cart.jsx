@@ -16,6 +16,7 @@ import { setCartOff } from "../context/actions/displayCartAction";
 const Cart = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
+  const user = useSelector((state) => state.user);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
@@ -27,6 +28,22 @@ const Cart = () => {
       });
     }
   }, [cart]);
+
+  const handleCheckOut = () => {
+    const data = {
+      user: user,
+      cart: cart,
+      total: total,
+    };
+    axios
+      .post(`${baseURL}/api/products/create-checkout-session`, { data })
+      .then((res) => {
+        if (res.data.url) {
+          window.location.href = res.data.url;
+        }
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <motion.div
@@ -57,14 +74,22 @@ const Cart = () => {
                   <CartItemCard key={i} index={i} data={item} />
                 ))}
             </div>
-            <div className="bg-zinc-800 rounded-t-[60px] w-full h-[35%] flex flex-col items-center justify-center px-4 py-6 gap-24">
-              <div className="w-full flex items-center justify-evenly">
+            <div className="bg-zinc-800 rounded-t-[60px] w-full h-[35%] flex flex-col items-center justify-center px-4 py-6 gap-10">
+              <div className="w-full flex items-center justify-evenly mb-8">
                 <p className="text-3xl text-zinc-500 font-semibold">Total</p>
                 <p className="text-3xl text-orange-500 font-semibold flex items-center justify-center gap-1">
                   <HiCurrencyRupee className="text-primary" />
                   {total}
                 </p>
               </div>
+
+              <motion.button
+                {...buttonClick}
+                className="bg-orange-400 w-[70%] px-4 py-4 text-2xl text-headingColor font-semibold hover:bg-orange-500 drop-shadow-md rounded-2xl mb-16"
+                onClick={handleCheckOut}
+              >
+                Check Out
+              </motion.button>
             </div>
           </>
         ) : (

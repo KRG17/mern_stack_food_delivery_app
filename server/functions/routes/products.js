@@ -2,7 +2,9 @@ const router = require("express").Router();
 const { async } = require("@firebase/util");
 const admin = require("firebase-admin");
 const db = admin.firestore();
+const express = require("express");
 db.settings({ ignoreUndefinedProperties: true });
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 router.post("/create", async (req, res) => {
   try {
@@ -181,5 +183,150 @@ router.get("/getCartItems/:user_id", async (req, res) => {
     }
   })();
 });
+
+router.post("/create-checkout-session", async (req, res) => {
+
+  const customer = await stripe.customers.create({
+    metadata : {
+      user_id: req.body.data.user.user_id,
+      cart: JSON.stringify(req.body.data.cart),
+      total: req.body.data.total,
+    }
+  })
+
+  const line_items = req.body.data.cart.map((item) => {
+    return {
+      price_data: {
+        currency: "inr",
+        product_data: {
+          name: item.product_name,
+          images: [item.imageURL],
+          metadata: {
+            id: item.productId,
+          },
+        },
+        unit_amount: item.product_price * 100,
+      },
+      quantity: item.quantity,
+    };
+  });
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
+    shipping_address_collection: { allowed_countries: ["IN"] },
+    shipping_options: [
+      {
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: { amount: 0, currency: "inr" },
+          display_name: "Free shipping",
+          delivery_estimate: {
+            minimum: { unit: "hour", value: 2 },
+            maximum: { unit: "hour", value: 4 },
+          },
+        },
+      },
+    ],
+    phone_number_collection: {
+      enabled: true,
+    },
+    line_items,
+    customer : customer.id,
+    mode: "payment",
+    success_url: `${process.env.CLIENT_URL}/checkout-success`,
+    cancel_url: `${process.env.CLIENT_URL}/`,
+  });
+
+  res.send({ url: session.url });
+});
+
+let endpointSecret;
+// endpointSecret = process.env.WEBHOOK_SECRET;
+
+router.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  (req, res) => {
+    const sig = req.headers["stripe-signature"];
+
+    let eventType;
+    let data;
+
+    if (endpointSecret) {
+      let event;
+      try {
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+      } catch (err) {
+        res.status(400).send(`Webhook Error: ${err.message}`);
+        return;
+      }
+      data = event.data.object;
+      eventType = event.type;
+    }else{
+      data = req.body.data.object;
+      eventType = req.body.type;
+    }
+
+    // Handle the event
+    if(eventType === "checkout.session.completed"){
+      // console.log(data);
+      stripe.customers.retrieve(data.customer).then(customer => {
+        console.log('Customer details', customer);
+        console.log('Data', data);
+        createOrder(customer,data,res);
+      })
+    }
+    // Return a 200 response to acknowledge receipt of the event
+    res.send().end();
+  }
+);
+
+const createOrder = async (customer, intent, res) => {
+  console.log("Inside the orders");
+  try {
+    const orderId = Date.now();
+    const data = {
+      intentId: intent.id,
+      orderId: orderId,
+      amount: intent.amount_total,
+      created: intent.created,
+      payment_method_types: intent.payment_method_types,
+      status: intent.payment_status,
+      customer: intent.customer_details,
+      shipping_details: intent.shipping_details,
+      userId: customer.metadata.user_id,
+      items: JSON.parse(customer.metadata.cart),
+      total: customer.metadata.total,
+      sts: "preparing",
+    };
+
+    await db.collection("orders").doc(`/${orderId}/`).set(data);
+
+    deleteCart(customer.metadata.user_id, JSON.parse(customer.metadata.cart));
+    console.log("*****************************************");
+
+    return res.status(200).send({ success: true });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const deleteCart = async (userId, items) => {
+  console.log("Inside the delete");
+
+  console.log(userId);
+
+  console.log("*****************************************");
+  items.map(async (data) => {
+    console.log("-------------------inside--------", userId, data.productId);
+    await db
+      .collection("cartItems")
+      .doc(`/${userId}/`)
+      .collection("items")
+      .doc(`/${data.productId}/`)
+      .delete()
+      .then(() => console.log("-------------------successs--------"));
+  });
+};
 
 module.exports = router;

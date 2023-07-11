@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const baseURL =
-  "http://localhost:5000/food-delivery-app-2023-1e4ab/us-central1/app";
+  "http://localhost:5001/food-delivery-app-2023-1e4ab/us-central1/app";
 
 export const validateUserJWTToken = async (token) => {
   try {
