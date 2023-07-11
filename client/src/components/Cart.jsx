@@ -94,7 +94,7 @@ const Cart = () => {
           </>
         ) : (
           <>
-            <h1 className="text-3xl text-primary font-bold">Empty Cart</h1>
+            <h1 className="text-3xl text-primary font-bold flex ml-10">Empty Cart</h1>
           </>
         )}
       </div>

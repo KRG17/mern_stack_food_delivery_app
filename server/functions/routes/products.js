@@ -185,14 +185,13 @@ router.get("/getCartItems/:user_id", async (req, res) => {
 });
 
 router.post("/create-checkout-session", async (req, res) => {
-
   const customer = await stripe.customers.create({
-    metadata : {
+    metadata: {
       user_id: req.body.data.user.user_id,
       cart: JSON.stringify(req.body.data.cart),
       total: req.body.data.total,
-    }
-  })
+    },
+  });
 
   const line_items = req.body.data.cart.map((item) => {
     return {
@@ -231,7 +230,7 @@ router.post("/create-checkout-session", async (req, res) => {
       enabled: true,
     },
     line_items,
-    customer : customer.id,
+    customer: customer.id,
     mode: "payment",
     success_url: `${process.env.CLIENT_URL}/checkout-success`,
     cancel_url: `${process.env.CLIENT_URL}/`,
@@ -262,21 +261,21 @@ router.post(
       }
       data = event.data.object;
       eventType = event.type;
-    }else{
+    } else {
       data = req.body.data.object;
       eventType = req.body.type;
     }
 
     // Handle the event
-    if(eventType === "checkout.session.completed"){
-      // console.log(data);
-      stripe.customers.retrieve(data.customer).then(customer => {
-        console.log('Customer details', customer);
-        console.log('Data', data);
-        createOrder(customer,data,res);
-      })
+    if (eventType === "checkout.session.completed") {
+      stripe.customers.retrieve(data.customer).then((customer) => {
+        // console.log("Customer details", customer);
+        // console.log("Data", data);
+        createOrder(customer, data, res);
+      });
     }
-    // Return a 200 response to acknowledge receipt of the event
+
+    // Return a 200 res to acknowledge receipt of the event
     res.send().end();
   }
 );
@@ -328,5 +327,41 @@ const deleteCart = async (userId, items) => {
       .then(() => console.log("-------------------successs--------"));
   });
 };
+
+//orders
+router.get("/orders", async (req, res) => {
+  (async () => {
+    try {
+      let query = db.collection("orders");
+      let response = [];
+      await query.get().then((querysnap) => {
+        let docs = querysnap.docs;
+        docs.map((doc) => {
+          response.push({ ...doc.data() });
+        });
+        return response;
+      });
+      return res.status(200).send({ success: true, data: response });
+    } catch (err) {
+      return res.send({ success: false, msg: `Error :${err}` });
+    }
+  })();
+});
+
+// update the order status
+router.post("/updateOrder/:order_id", async (req, res) => {
+  const order_id = req.params.order_id;
+  const sts = req.query.sts;
+
+  try {
+    const updatedItem = await db
+      .collection("orders")
+      .doc(`/${order_id}/`)
+      .update({ sts });
+    return res.status(200).send({ success: true, data: updatedItem });
+  } catch (er) {
+    return res.send({ success: false, msg: `Error :,${er}` });
+  }
+});
 
 module.exports = router;
