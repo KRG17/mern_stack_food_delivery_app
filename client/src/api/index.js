@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const baseURL =
-  "http://localhost:5000/food-delivery-app-2023-1e4ab/us-central1/app";
+  "http://localhost:5001/food-delivery-app-2023-1e4ab/us-central1/app";
 
 export const validateUserJWTToken = async (token) => {
   try {
@@ -89,6 +89,29 @@ export const increaseItemQuantity = async (user_id, productId, type) => {
       `${baseURL}/api/products/updateCart/${user_id}`,
       null,
       { params: { productId: productId, type: type } }
+    );
+    return res.data.data;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getAllOrder = async () => {
+  try {
+    const res = await axios.get(`${baseURL}/api/products/orders`);
+    return res.data.data;
+  } catch (error) {
+    return null;
+  }
+};
+
+// update the order status
+export const updateOrderSts = async (order_id, sts) => {
+  try {
+    const res = await axios.post(
+      `${baseURL}/api/products/updateOrder/${order_id}`,
+      null,
+      { params: { sts: sts } }
     );
     return res.data.data;
   } catch (error) {

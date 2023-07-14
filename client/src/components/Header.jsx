@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAuth } from "firebase/auth";
 import { app } from "../config/firebase.config";
 import { setUserNull } from "../context/actions/userActions";
-import { setCartOn } from "../context/actions/displayCartAction"
+import { setCartOn } from "../context/actions/displayCartAction";
 
 const Header = () => {
   //we got the user object from the store
@@ -113,19 +113,14 @@ const Header = () => {
                   onMouseLeave={() => setIsMenu(false)}
                   className="px-6 py-4 w-48 bg-LightOverlay backdrop-blur-md rounded-md shadow-md absolute top-12 right-0 flex flex-col gap-4"
                 >
-                  <Link
-                    className=" hover:text-red-500 text-xl text-textColor"
-                    to={"/dashboard/home"}
-                  >
-                    Dashboard
-                  </Link>
-
-                  <Link
-                    className=" hover:text-red-500 text-xl text-textColor"
-                    to={"/profile"}
-                  >
-                    My Profile
-                  </Link>
+                  {user?.user_id === process.env.REACT_APP_ADMIN_ID && (
+                    <Link
+                      className=" hover:text-red-500 text-xl text-textColor"
+                      to={"/dashboard/home"}
+                    >
+                      Dashboard
+                    </Link>
+                  )}
                   <Link
                     className=" hover:text-red-500 text-xl text-textColor"
                     to={"/user-orders"}
