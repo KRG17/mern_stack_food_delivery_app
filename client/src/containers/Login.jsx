@@ -135,8 +135,8 @@ const Login = () => {
       <div className="flex flex-col items-center bg-LightOverlay w-[20%] md:w-307 h-full z-10 backdrop-blur-md p-4 px-4 py-10 gap-6">
         {/* Top Logo Section */}
         <div className="flex items-center justify-start gap-3 w-full">
-          <img src={Logo} className="w-6" alt="" />
-          <p className=" text-headingColor font-semibold text-xl">Noida</p>
+          <img src={Logo} className="w-12" alt="" />
+          <p className=" text-headingColor font-semibold text-xl">YUM</p>
         </div>
 
         {/* Welcome text */}
